@@ -12,6 +12,7 @@ services:
       - ../:/app/data/projects
     environment:
       APP_URL: ${APP_URL}
+      TZ: "Europe/Vienna"
       PUID: "1000"
       PGID: "1000"
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
