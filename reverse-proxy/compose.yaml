@@ -1,0 +1,34 @@
+services:
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy
+    container_name: nginx-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    labels:
+      - "com.github.nginx-proxy.nginx"
+    volumes:
+      - ./proxy-data/certs:/etc/nginx/certs:ro
+      - ./proxy-data/html:/usr/share/nginx/html
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+
+  acme-companion:
+    image: nginxproxy/acme-companion
+    container_name: nginx-proxy-acme
+    restart: unless-stopped
+    depends_on:
+      nginx-proxy:
+        condition: service_started
+        restart: true
+    environment:
+      - DEFAULT_EMAIL=${LETSENCRYPT_MAIL}
+    volumes:
+      - ./proxy-data/certs:/etc/nginx/certs:rw
+      - ./proxy-data/html:/usr/share/nginx/html:rw
+      - ./proxy-data/acme:/etc/acme.sh
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+networks:
+  web:
+    external: true
