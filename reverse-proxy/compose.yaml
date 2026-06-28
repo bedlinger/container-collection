@@ -12,6 +12,8 @@ services:
       - ./proxy-data/certs:/etc/nginx/certs:ro
       - ./proxy-data/html:/usr/share/nginx/html
       - /var/run/docker.sock:/tmp/docker.sock:ro
+    networks:
+      - web
 
   acme-companion:
     image: nginxproxy/acme-companion
@@ -28,6 +30,8 @@ services:
       - ./proxy-data/html:/usr/share/nginx/html:rw
       - ./proxy-data/acme:/etc/acme.sh
       - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - web
 
 networks:
   web:
