@@ -1,8 +1,10 @@
 services:
   pwpush:
     image: docker.io/pglombardo/pwpush:latest
+    container_name: pwpusher
     restart: unless-stopped
-    platform: linux/amd64
+    expose:
+      - 5100
     environment:
       - PWPUSH_MASTER_KEY=${PWPUSH_MASTER_KEY}
       - TLS_DOMAIN=${TLS_DOMAIN}
@@ -17,12 +19,6 @@ services:
       - ./pwpush-storage:/opt/PasswordPusher/storage
     networks:
       - web
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5100/up"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
 
 networks:
   web:
