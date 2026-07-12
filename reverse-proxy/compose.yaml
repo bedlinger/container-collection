@@ -6,8 +6,6 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    labels:
-      - "com.github.nginx-proxy.nginx"
     volumes:
       - ./proxy-data/certs:/etc/nginx/certs:ro
       - ./proxy-data/html:/usr/share/nginx/html
