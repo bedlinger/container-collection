@@ -8,5 +8,7 @@
 !*/compose.yml
 !*/compose.yaml
 !*/.env.example
+!*/Dockerfile
+!*/*.sh
 !*/*.conf
 !.gitignore

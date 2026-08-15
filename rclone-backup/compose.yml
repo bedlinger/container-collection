@@ -1,0 +1,14 @@
+services:
+  rclone-backup:
+    build: .
+    container_name: rclone-backup
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - RUN_ON_START=true
+    volumes:
+      - /home/bedlinger/.config/rclone/rclone.conf:/config/rclone.conf:ro
+      - /home/bedlinger/vaultwarden/vw-backups:/data/vaultwarden:ro
+      - /home/bedlinger/trilium/trilium-data/backup:/data/trilium:ro
+      - ./logs:/logs
