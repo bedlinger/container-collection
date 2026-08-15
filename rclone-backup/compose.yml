@@ -8,7 +8,7 @@ services:
     environment:
       - RUN_ON_START=true
     volumes:
-      - /home/bedlinger/.config/rclone/rclone.conf:/config/rclone.conf:ro
+      - /home/bedlinger/.config/rclone/rclone.conf:/config/rclone.conf
       - /home/bedlinger/vaultwarden/vw-backups:/data/vaultwarden:ro
       - /home/bedlinger/trilium/trilium-data/backup:/data/trilium:ro
       - ./logs:/logs
