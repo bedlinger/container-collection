@@ -11,9 +11,9 @@ services:
       - "6767:67/udp"
       - "1234:123/udp"
     environment:
-      - TZ="Europe/Vienna"
-      - FTLCONF_webserver_api_password=${FTLCONF_webserver_api_password}
-      - FTLCONF_dns_listeningMode="ALL"
+      - TZ=Europe/Vienna
+      - FTLCONF_webserver_api_password=${WEB_API_PASSWD}
+      - FTLCONF_dns_listeningMode=LOCAL
     volumes:
       - "./etc-pihole:/etc/pihole"
     cap_add:
