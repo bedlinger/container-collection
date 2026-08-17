@@ -1,0 +1,24 @@
+services:
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    restart: unless-stopped
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "8000:80/tcp"
+      - "3344:443/tcp"
+      - "6767:67/udp"
+      - "1234:123/udp"
+    environment:
+      - TZ="Europe/Vienna"
+      - FTLCONF_webserver_api_password=${FTLCONF_webserver_api_password}
+      - FTLCONF_dns_listeningMode="ALL"
+    volumes:
+      - "./etc-pihole:/etc/pihole"
+    cap_add:
+      # See https://docs.pi-hole.net/docker/#note-on-capabilities
+      - NET_ADMIN
+      - SYS_TIME
+      - SYS_NICE
+    network_mode: host
