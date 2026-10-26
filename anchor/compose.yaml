@@ -1,9 +1,0 @@
-services:
-  anchor:
-    container_name: anchor
-    image: ghcr.io/zhfahim/anchor:latest
-    restart: unless-stopped
-    volumes:
-      - ./anchor_data/:/data/
-    ports:
-      - 3000:3000
