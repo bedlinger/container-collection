@@ -1,0 +1,61 @@
+services:
+  migrate:
+    image: ghcr.io/kanbn/kan-migrate:latest
+    container_name: kan-migrate
+    networks:
+      - kan-network
+    environment:
+      - POSTGRES_URL=${POSTGRES_URL}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  web:
+    image: ghcr.io/kanbn/kan:latest
+    container_name: kan-web
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+    networks:
+      - kan-network
+      - web
+    env_file:
+      - .env
+    environment:
+      - NEXT_PUBLIC_BASE_URL=${NEXT_PUBLIC_BASE_URL}
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
+      - POSTGRES_URL=${POSTGRES_URL}
+      - NEXT_PUBLIC_ALLOW_CREDENTIALS=true
+      - VIRTUAL_HOST=board.bedlinger.at
+      - LETSENCRYPT_HOST=board.bedlinger.at
+      - VIRTUAL_PORT=80
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:15
+    container_name: kan-db
+    environment:
+      - POSTGRES_DB=kan_db
+      - POSTGRES_USER=kan
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - 5432:5432
+    volumes:
+      - ./kan_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kan -d kan_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+    networks:
+      - kan-network
+
+networks:
+  kan-network:
+    driver: bridge
+  web:
+    external: true
