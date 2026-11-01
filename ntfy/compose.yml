@@ -2,7 +2,7 @@ services:
   ntfy:
     image: binwiederhier/ntfy:latest
     container_name: ntfy
-    restart: unless-stopped
+    restart: always
     ports:
       - 4000:80
     command:
@@ -11,6 +11,8 @@ services:
       - ./ntfy-data/cache:/var/cache/ntfy
       - ./ntfy-data/lib:/var/lib/ntfy
       - ./ntfy-data/etc:/etc/ntfy
+    labels:
+      - docker-volume-backup.stop-during-backup=true
 
   ntfy-backup:
     image: offen/docker-volume-backup:latest
@@ -25,7 +27,7 @@ services:
       NOTIFICATION_URLS: ${NOTIFICATION_URLS}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./ntfy-data:/backup/arcane/data:ro
+      - ./ntfy-data:/backup/ntfy/data:ro
       - ./ntfy-backup:/archive
 
 # server.yml - located in ./ntfy-data/etc/
