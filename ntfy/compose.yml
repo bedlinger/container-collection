@@ -12,6 +12,22 @@ services:
       - ./ntfy-data/lib:/var/lib/ntfy
       - ./ntfy-data/etc:/etc/ntfy
 
+  ntfy-backup:
+    image: offen/docker-volume-backup:latest
+    container_name: ntfy-backup
+    restart: unless-stopped
+    environment:
+      BACKUP_CRON_EXPRESSION: "@daily"
+      BACKUP_JITTER: "30s"
+      BACKUP_FILENAME: "BACKUP-ntfy-%Y-%m-%dT%H-%M-%S.{{ .Extension }}"
+      BACKUP_RETENTION_DAYS: "3"
+      BACKUP_PRUNING_PREFIX: "BACKUP-"
+      NOTIFICATION_URLS: ${NOTIFICATION_URLS}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./ntfy-data:/backup/arcane/data:ro
+      - ./ntfy-backup:/archive
+
 # server.yml - located in ./ntfy-data/etc/
 # Server
 # base-url: "https://ntfy.tailda5058.ts.net"
