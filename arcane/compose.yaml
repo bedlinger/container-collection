@@ -2,13 +2,13 @@ services:
   arcane:
     image: ghcr.io/getarcaneapp/manager:v2
     container_name: arcane
+    restart: unless-stopped
     ports:
       - "3552:3552"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./data:/app/data
       - ./builds:/builds
-      - ./backups:/backups
       - ../:/app/data/projects
     environment:
       APP_URL: ${APP_URL}
@@ -17,4 +17,22 @@ services:
       PGID: "1000"
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
       JWT_SECRET: ${JWT_SECRET}
+    labels:
+      - docker-volume-backup.stop-during-backup=true
+
+  arcane-backup:
+    image: offen/docker-volume-backup:latest
+    container_name: arcane-backup
     restart: unless-stopped
+    environment:
+      BACKUP_CRON_EXPRESSION: "@daily"
+      BACKUP_JITTER: "30s"
+      BACKUP_FILENAME: "BACKUP-arcane-%Y-%m-%dT%H-%M-%S.{{ .Extension }}"
+      BACKUP_RETENTION_DAYS: "3"
+      BACKUP_PRUNING_PREFIX: "BACKUP-"
+      NOTIFICATION_URLS: ${NOTIFICATION_URLS}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./data:/backup/arcane/data:ro
+      - ./builds:/backup/arcane/builds:ro
+      - ./arcane-backup:/archive
