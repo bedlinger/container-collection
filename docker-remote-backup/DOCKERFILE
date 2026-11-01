@@ -1,16 +1,27 @@
 FROM debian:bookworm-slim
 
-# Check https://proton.me/download/drive/cli/index.html for current versions / platforms
-# (linux-x64 or linux-arm64). The file-based credential store needs a recent CLI.
+# Check https://proton.me/download/drive/cli/index.html for current versions.
 ARG PROTON_CLI_VERSION=0.9.0
-ARG PROTON_CLI_PLATFORM=linux-x64
+# Leave empty to auto-detect from the build machine (linux-x64 or linux-arm64).
+ARG PROTON_CLI_PLATFORM=""
+
+ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
       ca-certificates curl tar gzip tzdata libicu72 libssl3 \
  && rm -rf /var/lib/apt/lists/* \
+ && platform="${PROTON_CLI_PLATFORM}" \
+ && if [ -z "$platform" ]; then \
+      case "$(uname -m)" in \
+        x86_64)          platform="linux-x64" ;; \
+        aarch64|arm64)   platform="linux-arm64" ;; \
+        *) echo "Unsupported architecture: $(uname -m)" >&2; exit 1 ;; \
+      esac; \
+    fi \
+ && echo "Downloading proton-drive ${PROTON_CLI_VERSION} for ${platform}" \
  && curl -fsSL -o /usr/local/bin/proton-drive \
-      "https://proton.me/download/drive/cli/${PROTON_CLI_VERSION}/${PROTON_CLI_PLATFORM}/proton-drive" \
+      "https://proton.me/download/drive/cli/${PROTON_CLI_VERSION}/${platform}/proton-drive" \
  && chmod +x /usr/local/bin/proton-drive \
  && proton-drive version
 

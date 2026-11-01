@@ -4,7 +4,6 @@ services:
       context: .
       args:
         PROTON_CLI_VERSION: "0.9.0"
-        PROTON_CLI_PLATFORM: "linux-x64"
     container_name: proton-backup
     restart: unless-stopped
     init: true
