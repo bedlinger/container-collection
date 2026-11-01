@@ -15,6 +15,10 @@ services:
       REMOTE_DIR: ${REMOTE_DIR} # must already exist in Proton Drive
       BACKUP_NAME: ${BACKUP_NAME} # prefix; run folder is <name>_YYYY-MM-DD_HHMMSS
       RUN_ON_START: ${RUN_ON_START} # true = also back up at container start
+      NTFY_URL: ${NTFY_URL:-} # e.g. https://ntfy.example.com (notifications off if empty)
+      NTFY_USER: ${NTFY_USER:-}
+      NTFY_PASSWORD: ${NTFY_PASSWORD:-}
+      NTFY_TOPIC: ${NTFY_TOPIC:-}
     volumes:
       - ./proton-session:/data # CLI session lives here
       - ./staging:/staging # temp space for archives
