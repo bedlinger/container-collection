@@ -13,6 +13,7 @@ services:
       - SIGNUPS_VERIFY=true
       - SIGNUPS_VERIFY_RESEND_TIME=3600
       - SIGNUPS_VERIFY_RESEND_LIMIT=5
+
   vaultwarden-backup:
     container_name: vaultwarden-backup
     image: bruceforce/vaultwarden-backup:latest
@@ -22,14 +23,13 @@ services:
       - vaultwarden
     volumes:
       - ./vw-data:/data/
-      - ./vw-backups/backups/:/backups/
-      - ./vw-backups/logs/:/logs/
+      - ./vw-backup:/backups/
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     environment:
       - BACKUP_DIR=/backups/
       - LOG_DIR=/logs/
-      - CRON_TIME=0 1 * * *
+      - CRON_TIME=0 0 * * *
       - DELETE_AFTER=7
       - TIMESTAMP=true
       - UID=1000
