@@ -33,9 +33,9 @@ services:
       - SMTP_PASSWORD=${SMTP_PASSWORD}
       - EMAIL_FROM=${EMAIL_FROM}
       - SMTP_REJECT_UNAUTHORIZED=${SMTP_REJECT_UNAUTHORIZED}
-      - VIRTUAL_HOST=board.bedlinger.at
-      - LETSENCRYPT_HOST=board.bedlinger.at
-      - VIRTUAL_PORT=80
+      - VIRTUAL_HOST={VIRTUAL_HOST}
+      - LETSENCRYPT_HOST={LETSENCRYPT_HOST}
+      - VIRTUAL_PORT={VIRTUAL_PORT}
     depends_on:
       migrate:
         condition: service_completed_successfully
