@@ -7,3 +7,19 @@ services:
       - ./kuma-data:/app/data
     ports:
       - 3001:3001
+
+  uptime-kuma-backup:
+    image: offen/docker-volume-backup:latest
+    container_name: uptime-kuma-backup
+    restart: unless-stopped
+    environment:
+      BACKUP_CRON_EXPRESSION: "@daily"
+      BACKUP_JITTER: "30s"
+      BACKUP_FILENAME: "BACKUP-uptime-kuma-%Y-%m-%dT%H-%M-%S.{{ .Extension }}"
+      BACKUP_RETENTION_DAYS: "3"
+      BACKUP_PRUNING_PREFIX: "BACKUP-"
+      NOTIFICATION_URLS: ${NOTIFICATION_URLS}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./kuma-data:/backup/kuma-data/data:ro
+      - ./uptime-kuma-backup:/archive
