@@ -2,7 +2,7 @@ services:
   arcane:
     image: ghcr.io/getarcaneapp/manager:v2
     container_name: arcane
-    restart: unless-stopped
+    restart: always
     ports:
       - "3552:3552"
     volumes:
