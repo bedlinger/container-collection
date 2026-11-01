@@ -9,7 +9,6 @@ services:
       - serve
     volumes:
       - ./ntfy-data/cache:/var/cache/ntfy
-      - ./ntfy-data/cache/attachments:/var/cache/ntfy/attachments
       - ./ntfy-data/lib:/var/lib/ntfy
       - ./ntfy-data/etc:/etc/ntfy
 
