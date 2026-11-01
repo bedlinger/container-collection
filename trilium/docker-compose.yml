@@ -11,3 +11,21 @@ services:
       - ./trilium-data:/home/node/trilium-data
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+    labels:
+      - docker-volume-backup.stop-during-backup=true
+
+  trilium-backup:
+    image: offen/docker-volume-backup:latest
+    container_name: trilium-backup
+    restart: unless-stopped
+    environment:
+      BACKUP_CRON_EXPRESSION: "@daily"
+      BACKUP_JITTER: "30s"
+      BACKUP_FILENAME: "BACKUP-trilium-%Y-%m-%dT%H-%M-%S.{{ .Extension }}"
+      BACKUP_RETENTION_DAYS: "3"
+      BACKUP_PRUNING_PREFIX: "BACKUP-"
+      NOTIFICATION_URLS: ${NOTIFICATION_URLS}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./trilium-data:/backup/trilium/data:ro
+      - ./trilium-backup:/archive
