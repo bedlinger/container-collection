@@ -13,9 +13,9 @@ services:
     environment:
       TZ: ${TZ}
       BACKUP_TIME: ${BACKUP_TIME} # daily, HH:MM in TZ
-      REMOTE_DIR: ${REMOTE_DIR # must already exist in Proton Drive
+      REMOTE_DIR: ${REMOTE_DIR} # must already exist in Proton Drive
       BACKUP_NAME: ${BACKUP_NAME} # prefix; run folder is <name>_YYYY-MM-DD_HHMMSS
-      RUN_ON_START: ${RUN_ON_START:-false} # true = also back up at container start
+      RUN_ON_START: ${RUN_ON_START} # true = also back up at container start
     volumes:
       - ./proton-session:/data # CLI session lives here
       - ./staging:/staging # temp space for archives
