@@ -1,0 +1,25 @@
+FROM debian:bookworm-slim
+
+# Check https://proton.me/download/drive/cli/index.html for current versions / platforms
+# (linux-x64 or linux-arm64). The file-based credential store needs a recent CLI.
+ARG PROTON_CLI_VERSION=0.9.0
+ARG PROTON_CLI_PLATFORM=linux-x64
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+      ca-certificates curl tar gzip tzdata libicu72 libssl3 \
+ && rm -rf /var/lib/apt/lists/* \
+ && curl -fsSL -o /usr/local/bin/proton-drive \
+      "https://proton.me/download/drive/cli/${PROTON_CLI_VERSION}/${PROTON_CLI_PLATFORM}/proton-drive" \
+ && chmod +x /usr/local/bin/proton-drive \
+ && proton-drive version
+
+# No keyring/D-Bus in a container, so the session is kept in a file on the /data volume.
+ENV HOME=/data \
+    PROTON_DRIVE_CACHE_DIR=/data/proton \
+    PROTON_DRIVE_CREDENTIALS_STORE=unsafe_file
+
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
