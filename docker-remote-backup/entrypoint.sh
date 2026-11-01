@@ -98,7 +98,6 @@ run_backup() {
     return 1
   fi
   log "Backup finished OK"
-  ping_hc
   notify "Backup OK on ${HOST}" 3 "white_check_mark,floppy_disk" \
     "${ok_count} archives (${size}) uploaded to ${REMOTE_DIR}/${run_name}"
 }
